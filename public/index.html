@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>象棋竞技场 · Chess Arena</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="logo">♟</span> 象棋竞技场</div>
+      <nav class="modes" id="modeNav">
+        <button class="mode-btn active" data-mode="single">单机对战</button>
+        <button class="mode-btn" data-mode="online">联网对战</button>
+      </nav>
+      <div class="account" id="accountArea">
+        <span class="guest-hint" id="guestHint">游客模式 · 棋谱仅本机</span>
+        <button class="btn ghost" id="loginBtn">登录 / 注册</button>
+        <div class="user-chip hidden" id="userChip">
+          <span id="userName">—</span>
+          <button class="btn tiny" id="logoutBtn">退出</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- 棋盘列 -->
+      <section class="board-col">
+        <div class="status-banner" id="statusBanner">白方走棋</div>
+        <div class="board-wrap">
+          <div id="board" class="board" aria-label="chess board"></div>
+        </div>
+        <div class="controls" id="controls">
+          <!-- 单机控制 -->
+          <div class="ctrl-group" id="singleControls">
+            <label class="ctrl-label">电脑思考级别
+              <select id="levelSelect">
+                <option value="novice">初级 · 随手棋</option>
+                <option value="amateur" selected>中级 · 业余</option>
+                <option value="advanced">高级 · 强手</option>
+                <option value="master">大师级 · 深度搜索</option>
+              </select>
+            </label>
+            <label class="ctrl-label">执子
+              <select id="sideSelect">
+                <option value="white" selected>白方（先手）</option>
+                <option value="black">黑方（后手）</option>
+              </select>
+            </label>
+          </div>
+          <!-- 联网控制 -->
+          <div class="ctrl-group hidden" id="onlineControls">
+            <button class="btn primary" id="findBtn">寻找对手</button>
+            <span class="matching hidden" id="matchingTip">匹配中… <span class="spinner"></span></span>
+          </div>
+          <div class="ctrl-actions">
+            <button class="btn" id="newGameBtn">新对局</button>
+            <button class="btn" id="flipBtn">翻转棋盘</button>
+            <button class="btn" id="undoBtn">悔棋</button>
+            <button class="btn warn" id="resignBtn">认输</button>
+            <button class="btn" id="saveBtn">保存棋谱</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 信息列 -->
+      <section class="side-col">
+        <div class="clocks">
+          <div class="clock" id="clockWhite"><span class="dot w"></span><span class="t">--:--</span></div>
+          <div class="clock" id="clockBlack"><span class="dot b"></span><span class="t">--:--</span></div>
+        </div>
+        <div class="captured" id="capturedWhite"></div>
+        <div class="captured" id="capturedBlack"></div>
+        <div class="panel move-panel">
+          <div class="panel-title">棋谱</div>
+          <ol class="move-list" id="moveList"></ol>
+        </div>
+        <div class="panel games-panel hidden" id="gamesPanel">
+          <div class="panel-title">我的棋谱</div>
+          <div class="games-list" id="gamesList"></div>
+        </div>
+      </section>
+
+      <!-- 思路列 -->
+      <section class="think-col">
+        <div class="panel think-panel">
+          <div class="panel-title">电脑思路 · 边下边学</div>
+          <div id="commentary" class="commentary">
+            <div class="think-empty">每走一步，这里会展示电脑的<strong>思考过程</strong>：它为什么这样走、算到了什么、还有哪些备选方案。慢慢看，你也能学会看懂棋局。</div>
+          </div>
+        </div>
+        <div class="panel chat-panel hidden" id="chatPanel">
+          <div class="panel-title">对局聊天</div>
+          <div class="chat-log" id="chatLog"></div>
+          <div class="chat-input">
+            <input id="chatInput" placeholder="说点什么…" maxlength="200" />
+            <button class="btn tiny" id="chatSend">发送</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 升变选择 -->
+  <div class="modal hidden" id="promoModal">
+    <div class="modal-card">
+      <div class="modal-title">选择升变棋子</div>
+      <div class="promo-choices" id="promoChoices"></div>
+    </div>
+  </div>
+
+  <!-- 登录/注册 -->
+  <div class="modal hidden" id="authModal">
+    <div class="modal-card">
+      <div class="modal-title" id="authTitle">登录</div>
+      <div class="tabs">
+        <button class="tab active" data-auth="login">登录</button>
+        <button class="tab" data-auth="register">注册</button>
+      </div>
+      <input id="authUser" placeholder="用户名（≥2字）" />
+      <input id="authPass" type="password" placeholder="密码（≥4字）" />
+      <div class="auth-error" id="authError"></div>
+      <button class="btn primary" id="authSubmit">登录</button>
+    </div>
+  </div>
+
+  <!-- 游戏结束 -->
+  <div class="modal hidden" id="overModal">
+    <div class="modal-card">
+      <div class="modal-title" id="overTitle">对局结束</div>
+      <div class="over-result" id="overResult"></div>
+      <div class="over-actions">
+        <button class="btn primary" id="overSave">保存棋谱</button>
+        <button class="btn" id="overNew">再来一局</button>
+        <button class="btn hidden" id="overRematch">再战</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

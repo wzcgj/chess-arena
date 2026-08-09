@@ -1,0 +1,21 @@
+# Render 部署清单（免费 Web 服务）
+# 部署后需在 Render 后台 Services → chess-arena → Environment 中设置：
+#   SUPABASE_URL                 = https://xxxx.supabase.co
+#   SUPABASE_SERVICE_ROLE_KEY    = eyJ...（Project Settings → API → service_role，服务端专用）
+services:
+  - type: web
+    name: chess-arena
+    runtime: node
+    plan: free
+    region: oregon        # 或 singapore / frankfurt，挑离你近的
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: SUPABASE_URL
+        sync: false        # 在 Render 后台填写真实值
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

@@ -1,0 +1,28 @@
+{
+  "name": "chess-arena",
+  "version": "1.0.0",
+  "private": true,
+  "description": "国际象棋对弈平台 — 联网对战 / AI 单机对战 / 思路讲解 / 棋谱云存",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node test/perft.test.js && node test/engine.test.js",
+    "test:rules": "node test/perft.test.js",
+    "test:engine": "node test/engine.test.js",
+    "test:commentary": "node test/commentary.test.js",
+    "test:ws": "node test/ws.test.js",
+    "test:browser": "node test/browser.test.js",
+    "test:online": "node test/online-browser.test.js",
+    "test:all": "node test/perft.test.js && node test/engine.test.js && node test/ws.test.js && node test/browser.test.js && node test/online-browser.test.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "express": "^4.19.2",
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
